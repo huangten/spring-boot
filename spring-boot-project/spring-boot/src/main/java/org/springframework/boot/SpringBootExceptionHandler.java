@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -86,6 +86,9 @@ class SpringBootExceptionHandler implements UncaughtExceptionHandler {
 	 * @return {@code true} if the exception contains a log configuration message
 	 */
 	private boolean isLogConfigurationMessage(Throwable ex) {
+		if (ex instanceof InvocationTargetException) {
+			return isLogConfigurationMessage(ex.getCause());
+		}
 		String message = ex.getMessage();
 		if (message != null) {
 			for (String candidate : LOG_CONFIGURATION_MESSAGES) {

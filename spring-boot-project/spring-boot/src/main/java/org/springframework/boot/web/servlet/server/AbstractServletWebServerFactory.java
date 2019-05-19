@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,9 +17,7 @@
 package org.springframework.boot.web.servlet.server;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -280,16 +278,6 @@ public abstract class AbstractServletWebServerFactory
 
 	protected final List<URL> getUrlsOfJarsWithMetaInfResources() {
 		return this.staticResourceJars.getUrls();
-	}
-
-	protected final String getDecodedFile(URL url) {
-		try {
-			return URLDecoder.decode(url.getFile(), "UTF-8");
-		}
-		catch (UnsupportedEncodingException ex) {
-			throw new IllegalStateException(
-					"Failed to decode '" + url.getFile() + "' using UTF-8");
-		}
 	}
 
 	protected final File getValidSessionStoreDir() {

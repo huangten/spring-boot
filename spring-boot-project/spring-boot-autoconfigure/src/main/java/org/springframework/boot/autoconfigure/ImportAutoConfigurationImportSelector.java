@@ -1,11 +1,11 @@
 /*
- * Copyright 2012-2017 the original author or authors.
+ * Copyright 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -39,7 +39,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
 
 /**
- * Variant of {@link AutoConfigurationImportSelector} for {@link ImportAutoConfiguration}.
+ * Variant of {@link AutoConfigurationImportSelector} for
+ * {@link ImportAutoConfiguration @ImportAutoConfiguration}.
  *
  * @author Phillip Webb
  * @author Andy Wilkinson
@@ -74,9 +75,8 @@ class ImportAutoConfigurationImportSelector extends AutoConfigurationImportSelec
 			AnnotationAttributes attributes) {
 		List<String> candidates = new ArrayList<>();
 		Map<Class<?>, List<Annotation>> annotations = getAnnotations(metadata);
-		for (Map.Entry<Class<?>, List<Annotation>> entry : annotations.entrySet()) {
-			collectCandidateConfigurations(entry.getKey(), entry.getValue(), candidates);
-		}
+		annotations.forEach((source, sourceAnnotations) -> collectCandidateConfigurations(
+				source, sourceAnnotations, candidates));
 		return candidates;
 	}
 
@@ -110,8 +110,8 @@ class ImportAutoConfigurationImportSelector extends AutoConfigurationImportSelec
 		for (String annotationName : ANNOTATION_NAMES) {
 			AnnotationAttributes merged = AnnotatedElementUtils
 					.getMergedAnnotationAttributes(source, annotationName);
-			Class<?>[] exclude = (merged == null ? null
-					: merged.getClassArray("exclude"));
+			Class<?>[] exclude = (merged != null) ? merged.getClassArray("exclude")
+					: null;
 			if (exclude != null) {
 				for (Class<?> excludeClass : exclude) {
 					exclusions.add(excludeClass.getName());

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -53,9 +53,14 @@ public class ApplicationConversionService extends FormattingConversionService {
 	}
 
 	/**
-	 * Return a shared default {@code ApplicationConversionService} instance, lazily
+	 * Return a shared default application {@code ConversionService} instance, lazily
 	 * building it once needed.
-	 * @return the shared {@code ConversionService} instance (never {@code null})
+	 * <p>
+	 * Note: This method actually returns an {@link ApplicationConversionService}
+	 * instance. However, the {@code ConversionService} signature has been preserved for
+	 * binary compatibility.
+	 * @return the shared {@code ApplicationConversionService} instance (never
+	 * {@code null})
 	 */
 	public static ConversionService getSharedInstance() {
 		ApplicationConversionService sharedInstance = ApplicationConversionService.sharedInstance;
@@ -72,11 +77,11 @@ public class ApplicationConversionService extends FormattingConversionService {
 	}
 
 	/**
-	 * Configure the given {@link FormatterRegistry} with formatters and converts
+	 * Configure the given {@link FormatterRegistry} with formatters and converters
 	 * appropriate for most Spring Boot applications.
 	 * @param registry the registry of converters to add to (must also be castable to
 	 * ConversionService, e.g. being a {@link ConfigurableConversionService})
-	 * @throws ClassCastException if the given ConverterRegistry could not be cast to a
+	 * @throws ClassCastException if the given FormatterRegistry could not be cast to a
 	 * ConversionService
 	 */
 	public static void configure(FormatterRegistry registry) {
@@ -88,7 +93,6 @@ public class ApplicationConversionService extends FormattingConversionService {
 
 	/**
 	 * Add converters useful for most Spring Boot applications.
-	 * {@link DefaultConversionService#addDefaultConverters(ConverterRegistry)}
 	 * @param registry the registry of converters to add to (must also be castable to
 	 * ConversionService, e.g. being a {@link ConfigurableConversionService})
 	 * @throws ClassCastException if the given ConverterRegistry could not be cast to a
@@ -100,6 +104,8 @@ public class ApplicationConversionService extends FormattingConversionService {
 		registry.addConverter(new DurationToStringConverter());
 		registry.addConverter(new NumberToDurationConverter());
 		registry.addConverter(new DurationToNumberConverter());
+		registry.addConverter(new StringToDataSizeConverter());
+		registry.addConverter(new NumberToDataSizeConverter());
 		registry.addConverterFactory(new StringToEnumIgnoringCaseConverterFactory());
 	}
 

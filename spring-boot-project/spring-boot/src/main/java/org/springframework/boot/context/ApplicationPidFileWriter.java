@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -163,7 +163,7 @@ public class ApplicationPidFileWriter
 
 	private boolean failOnWriteError(SpringApplicationEvent event) {
 		String value = getProperty(event, FAIL_ON_WRITE_ERROR_PROPERTIES);
-		return (value == null ? false : Boolean.parseBoolean(value));
+		return (value != null) ? Boolean.parseBoolean(value) : false;
 	}
 
 	private String getProperty(SpringApplicationEvent event, List<Property> candidates) {

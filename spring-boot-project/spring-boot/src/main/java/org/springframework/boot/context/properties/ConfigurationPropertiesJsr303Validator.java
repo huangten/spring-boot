@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,8 +38,7 @@ final class ConfigurationPropertiesJsr303Validator implements Validator {
 
 	private final Delegate delegate;
 
-	private ConfigurationPropertiesJsr303Validator(
-			ApplicationContext applicationContext) {
+	ConfigurationPropertiesJsr303Validator(ApplicationContext applicationContext) {
 		this.delegate = new Delegate(applicationContext);
 	}
 
@@ -53,15 +52,14 @@ final class ConfigurationPropertiesJsr303Validator implements Validator {
 		this.delegate.validate(target, errors);
 	}
 
-	public static ConfigurationPropertiesJsr303Validator getIfJsr303Present(
-			ApplicationContext applicationContext) {
+	public static boolean isJsr303Present(ApplicationContext applicationContext) {
 		ClassLoader classLoader = applicationContext.getClassLoader();
 		for (String validatorClass : VALIDATOR_CLASSES) {
 			if (!ClassUtils.isPresent(validatorClass, classLoader)) {
-				return null;
+				return false;
 			}
 		}
-		return new ConfigurationPropertiesJsr303Validator(applicationContext);
+		return true;
 	}
 
 	private static class Delegate extends LocalValidatorFactoryBean {

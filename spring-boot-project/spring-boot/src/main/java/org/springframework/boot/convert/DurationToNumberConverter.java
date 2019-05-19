@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -46,9 +46,13 @@ final class DurationToNumberConverter implements GenericConverter {
 		if (source == null) {
 			return null;
 		}
-		DurationUnit unit = sourceType.getAnnotation(DurationUnit.class);
-		return convert((Duration) source, (unit == null ? null : unit.value()),
+		return convert((Duration) source, getDurationUnit(sourceType),
 				targetType.getObjectType());
+	}
+
+	private ChronoUnit getDurationUnit(TypeDescriptor sourceType) {
+		DurationUnit annotation = sourceType.getAnnotation(DurationUnit.class);
+		return (annotation != null) ? annotation.value() : null;
 	}
 
 	private Object convert(Duration source, ChronoUnit unit, Class<?> type) {

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -117,7 +117,7 @@ public class DelimitedStringToCollectionConverterTests {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void convertWhenHasDelimiterOfNoneShouldReturnTrimmedStringElement() {
+	public void convertWhenHasDelimiterOfNoneShouldReturnWholeString() {
 		TypeDescriptor sourceType = TypeDescriptor.valueOf(String.class);
 		TypeDescriptor targetType = TypeDescriptor
 				.nested(ReflectionUtils.findField(Values.class, "delimiterNone"), 0);
@@ -126,13 +126,15 @@ public class DelimitedStringToCollectionConverterTests {
 		assertThat(converted).containsExactly("a,b,c");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void convertWhenHasCollectionObjectTypeShouldUseCollectionObjectType() {
 		TypeDescriptor sourceType = TypeDescriptor.valueOf(String.class);
 		TypeDescriptor targetType = TypeDescriptor
 				.nested(ReflectionUtils.findField(Values.class, "specificType"), 0);
-		Object converted = this.conversionService.convert("a*b", sourceType, targetType);
-		assertThat(converted).isInstanceOf(MyCustomList.class);
+		MyCustomList<String> converted = (MyCustomList<String>) this.conversionService
+				.convert("a*b", sourceType, targetType);
+		assertThat(converted).containsExactly("a", "b");
 	}
 
 	@Parameters(name = "{0}")

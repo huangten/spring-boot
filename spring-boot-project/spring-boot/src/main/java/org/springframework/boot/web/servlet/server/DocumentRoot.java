@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -60,9 +60,9 @@ class DocumentRoot {
 	 */
 	public final File getValidDirectory() {
 		File file = this.directory;
-		file = (file != null ? file : getWarFileDocumentRoot());
-		file = (file != null ? file : getExplodedWarFileDocumentRoot());
-		file = (file != null ? file : getCommonDocumentRoot());
+		file = (file != null) ? file : getWarFileDocumentRoot();
+		file = (file != null) ? file : getExplodedWarFileDocumentRoot();
+		file = (file != null) ? file : getCommonDocumentRoot();
 		if (file == null && this.logger.isDebugEnabled()) {
 			logNoDocumentRoots();
 		}
@@ -98,7 +98,7 @@ class DocumentRoot {
 
 	File getCodeSourceArchive(CodeSource codeSource) {
 		try {
-			URL location = (codeSource == null ? null : codeSource.getLocation());
+			URL location = (codeSource != null) ? codeSource.getLocation() : null;
 			if (location == null) {
 				return null;
 			}

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -41,7 +41,7 @@ public interface PropertySourceLoader {
 	/**
 	 * Load the resource into one or more property sources. Implementations may either
 	 * return a list containing a single source, or in the case of a multi-document format
-	 * such as yaml a source or each document in the resource.
+	 * such as yaml a source for each document in the resource.
 	 * @param name the root name of the property source. If multiple documents are loaded
 	 * an additional suffix should be added to the name for each source loaded.
 	 * @param resource the resource to load

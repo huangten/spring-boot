@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -124,14 +124,15 @@ abstract class ArchiveCommand extends OptionParsingCommand {
 		protected ExitStatus run(OptionSet options) throws Exception {
 			List<?> nonOptionArguments = new ArrayList<Object>(
 					options.nonOptionArguments());
-			Assert.isTrue(nonOptionArguments.size() >= 2, "The name of the resulting "
-					+ this.type + " and at least one source file must be specified");
+			Assert.isTrue(nonOptionArguments.size() >= 2,
+					() -> "The name of the " + "resulting " + this.type
+							+ " and at least one source file must be " + "specified");
 
 			File output = new File((String) nonOptionArguments.remove(0));
 			Assert.isTrue(
 					output.getName().toLowerCase(Locale.ENGLISH)
 							.endsWith("." + this.type),
-					"The output '" + output + "' is not a "
+					() -> "The output '" + output + "' is not a "
 							+ this.type.toUpperCase(Locale.ENGLISH) + " file.");
 			deleteIfExists(output);
 
@@ -229,7 +230,9 @@ abstract class ArchiveCommand extends OptionParsingCommand {
 		private String commaDelimitedClassNames(Class<?>[] classes) {
 			StringBuilder builder = new StringBuilder();
 			for (int i = 0; i < classes.length; i++) {
-				builder.append(i == 0 ? "" : ",");
+				if (i != 0) {
+					builder.append(',');
+				}
 				builder.append(classes[i].getName());
 			}
 			return builder.toString();

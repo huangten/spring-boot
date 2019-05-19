@@ -1,11 +1,11 @@
 /*
- * Copyright 2012-2018 the original author or authors.
+ * Copyright 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,6 +23,7 @@ import org.springframework.boot.actuate.autoconfigure.web.server.ManagementWebSe
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
 import org.springframework.boot.autoconfigure.web.embedded.JettyWebServerFactoryCustomizer;
+import org.springframework.boot.autoconfigure.web.embedded.NettyWebServerFactoryCustomizer;
 import org.springframework.boot.autoconfigure.web.embedded.TomcatWebServerFactoryCustomizer;
 import org.springframework.boot.autoconfigure.web.embedded.UndertowWebServerFactoryCustomizer;
 import org.springframework.boot.autoconfigure.web.reactive.ReactiveWebServerFactoryCustomizer;
@@ -34,8 +35,9 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 
 /**
- * {@link ManagementContextConfiguration} for reactive web infrastructure when a separate
- * management context with a web server running on a different port is required.
+ * {@link ManagementContextConfiguration @ManagementContextConfiguration} for reactive web
+ * infrastructure when a separate management context with a web server running on a
+ * different port is required.
  *
  * @author Andy Wilkinson
  * @author Phillip Webb
@@ -64,7 +66,8 @@ public class ReactiveManagementChildContextConfiguration {
 			super(beanFactory, ReactiveWebServerFactoryCustomizer.class,
 					TomcatWebServerFactoryCustomizer.class,
 					JettyWebServerFactoryCustomizer.class,
-					UndertowWebServerFactoryCustomizer.class);
+					UndertowWebServerFactoryCustomizer.class,
+					NettyWebServerFactoryCustomizer.class);
 		}
 
 	}

@@ -1,11 +1,11 @@
 /*
- * Copyright 2012-2018 the original author or authors.
+ * Copyright 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,14 +24,19 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import org.springframework.boot.actuate.audit.InMemoryAuditEventRepository;
 import org.springframework.boot.actuate.autoconfigure.endpoint.EndpointAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.endpoint.jmx.JmxEndpointAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.health.HealthIndicatorAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.trace.http.HttpTraceAutoConfiguration;
+import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,8 +52,11 @@ public class JmxEndpointIntegrationTests {
 	private final WebApplicationContextRunner contextRunner = new WebApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(JmxAutoConfiguration.class,
 					EndpointAutoConfiguration.class, JmxEndpointAutoConfiguration.class,
+					HealthIndicatorAutoConfiguration.class,
 					HttpTraceAutoConfiguration.class))
-			.withConfiguration(
+			.withUserConfiguration(HttpTraceRepositoryConfiguration.class,
+					AuditEventRepositoryConfiguration.class)
+			.withPropertyValues("spring.jmx.enabled=true").withConfiguration(
 					AutoConfigurations.of(EndpointAutoConfigurationClasses.ALL));
 
 	@Test
@@ -105,7 +113,7 @@ public class JmxEndpointIntegrationTests {
 			getMBeanInfo(mBeanServer, objectName);
 			return true;
 		}
-		catch (InstanceNotFoundException e) {
+		catch (InstanceNotFoundException ex) {
 			return false;
 		}
 	}
@@ -132,6 +140,26 @@ public class JmxEndpointIntegrationTests {
 		}
 		catch (MalformedObjectNameException ex) {
 			throw new IllegalStateException("Invalid object name", ex);
+		}
+
+	}
+
+	@Configuration(proxyBeanMethods = false)
+	public static class HttpTraceRepositoryConfiguration {
+
+		@Bean
+		public InMemoryHttpTraceRepository httpTraceRepository() {
+			return new InMemoryHttpTraceRepository();
+		}
+
+	}
+
+	@Configuration(proxyBeanMethods = false)
+	public static class AuditEventRepositoryConfiguration {
+
+		@Bean
+		public InMemoryAuditEventRepository auditEventRepository() {
+			return new InMemoryAuditEventRepository();
 		}
 
 	}

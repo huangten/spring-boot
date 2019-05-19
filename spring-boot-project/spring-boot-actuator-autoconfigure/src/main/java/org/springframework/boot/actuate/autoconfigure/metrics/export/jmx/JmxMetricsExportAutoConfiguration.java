@@ -1,11 +1,11 @@
 /*
- * Copyright 2012-2018 the original author or authors.
+ * Copyright 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,7 +17,6 @@
 package org.springframework.boot.actuate.autoconfigure.metrics.export.jmx;
 
 import io.micrometer.core.instrument.Clock;
-import io.micrometer.core.instrument.util.HierarchicalNameMapper;
 import io.micrometer.jmx.JmxConfig;
 import io.micrometer.jmx.JmxMeterRegistry;
 
@@ -41,13 +40,14 @@ import org.springframework.context.annotation.Configuration;
  * @author Jon Schneider
  * @since 2.0.0
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @AutoConfigureBefore({ CompositeMeterRegistryAutoConfiguration.class,
 		SimpleMetricsExportAutoConfiguration.class })
 @AutoConfigureAfter(MetricsAutoConfiguration.class)
 @ConditionalOnBean(Clock.class)
 @ConditionalOnClass(JmxMeterRegistry.class)
-@ConditionalOnProperty(prefix = "management.metrics.export.jmx", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "management.metrics.export.jmx", name = "enabled",
+		havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(JmxProperties.class)
 public class JmxMetricsExportAutoConfiguration {
 
@@ -59,15 +59,8 @@ public class JmxMetricsExportAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public JmxMeterRegistry jmxMeterRegistry(JmxConfig config,
-			HierarchicalNameMapper nameMapper, Clock clock) {
-		return new JmxMeterRegistry(config, clock, nameMapper);
-	}
-
-	@Bean
-	@ConditionalOnMissingBean
-	public HierarchicalNameMapper hierarchicalNameMapper() {
-		return HierarchicalNameMapper.DEFAULT;
+	public JmxMeterRegistry jmxMeterRegistry(JmxConfig jmxConfig, Clock clock) {
+		return new JmxMeterRegistry(jmxConfig, clock);
 	}
 
 }

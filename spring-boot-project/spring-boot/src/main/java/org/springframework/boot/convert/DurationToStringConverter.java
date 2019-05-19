@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -45,14 +45,22 @@ final class DurationToStringConverter implements GenericConverter {
 		if (source == null) {
 			return null;
 		}
-		DurationFormat format = sourceType.getAnnotation(DurationFormat.class);
-		DurationUnit unit = sourceType.getAnnotation(DurationUnit.class);
-		return convert((Duration) source, (format == null ? null : format.value()),
-				(unit == null ? null : unit.value()));
+		return convert((Duration) source, getDurationStyle(sourceType),
+				getDurationUnit(sourceType));
+	}
+
+	private ChronoUnit getDurationUnit(TypeDescriptor sourceType) {
+		DurationUnit annotation = sourceType.getAnnotation(DurationUnit.class);
+		return (annotation != null) ? annotation.value() : null;
+	}
+
+	private DurationStyle getDurationStyle(TypeDescriptor sourceType) {
+		DurationFormat annotation = sourceType.getAnnotation(DurationFormat.class);
+		return (annotation != null) ? annotation.value() : null;
 	}
 
 	private String convert(Duration source, DurationStyle style, ChronoUnit unit) {
-		style = (style != null ? style : DurationStyle.ISO8601);
+		style = (style != null) ? style : DurationStyle.ISO8601;
 		return style.print(source, unit);
 	}
 

@@ -1,11 +1,11 @@
 /*
- * Copyright 2012-2018 the original author or authors.
+ * Copyright 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -32,9 +32,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
-import org.mockito.MockitoAnnotations;
 
 import org.springframework.boot.loader.archive.Archive;
 import org.springframework.boot.loader.archive.ExplodedArchive;
@@ -44,6 +42,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 /**
  * Tests for {@link PropertiesLauncher}.
@@ -57,9 +56,6 @@ public class PropertiesLauncherTests {
 	public OutputCapture output = new OutputCapture();
 
 	@Rule
-	public ExpectedException expected = ExpectedException.none();
-
-	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
 	private ClassLoader contextClassLoader;
@@ -67,7 +63,6 @@ public class PropertiesLauncherTests {
 	@Before
 	public void setup() {
 		this.contextClassLoader = Thread.currentThread().getContextClassLoader();
-		MockitoAnnotations.initMocks(this);
 		System.setProperty("loader.home",
 				new File("src/test/resources").getAbsolutePath());
 	}
@@ -104,10 +99,9 @@ public class PropertiesLauncherTests {
 	@Test
 	public void testNonExistentHome() {
 		System.setProperty("loader.home", "src/test/resources/nonexistent");
-		this.expected.expectMessage("Invalid source folder");
-		PropertiesLauncher launcher = new PropertiesLauncher();
-		assertThat(launcher.getHomeDirectory())
-				.isNotEqualTo(new File(System.getProperty("loader.home")));
+		assertThatIllegalStateException().isThrownBy(PropertiesLauncher::new)
+				.withMessageContaining("Invalid source folder")
+				.withCauseInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
@@ -148,7 +142,7 @@ public class PropertiesLauncherTests {
 		assertThat(ReflectionTestUtils.getField(launcher, "paths").toString())
 				.isEqualTo("[jars/]");
 		List<Archive> archives = launcher.getClassPathArchives();
-		assertThat(archives).areExactly(1, endingWith("app.jar!/"));
+		assertThat(archives).areExactly(1, endingWith("app.jar"));
 	}
 
 	@Test
@@ -182,7 +176,7 @@ public class PropertiesLauncherTests {
 				.isEqualTo("[jar:file:./src/test/resources/nested-jars/app.jar!/]");
 		List<Archive> archives = launcher.getClassPathArchives();
 		assertThat(archives).areExactly(1, endingWith("foo.jar!/"));
-		assertThat(archives).areExactly(1, endingWith("app.jar!/"));
+		assertThat(archives).areExactly(1, endingWith("app.jar"));
 	}
 
 	@Test
@@ -191,7 +185,7 @@ public class PropertiesLauncherTests {
 		PropertiesLauncher launcher = new PropertiesLauncher();
 		List<Archive> archives = launcher.getClassPathArchives();
 		assertThat(archives).areExactly(1, endingWith("foo.jar!/"));
-		assertThat(archives).areExactly(1, endingWith("app.jar!/"));
+		assertThat(archives).areExactly(1, endingWith("app.jar"));
 	}
 
 	@Test
@@ -210,7 +204,7 @@ public class PropertiesLauncherTests {
 		PropertiesLauncher launcher = new PropertiesLauncher();
 		List<Archive> archives = launcher.getClassPathArchives();
 		assertThat(archives).areExactly(1, endingWith("foo.jar!/"));
-		assertThat(archives).areExactly(1, endingWith("app.jar!/"));
+		assertThat(archives).areExactly(1, endingWith("app.jar"));
 	}
 
 	@Test

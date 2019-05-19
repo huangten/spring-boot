@@ -1,11 +1,11 @@
 /*
- * Copyright 2012-2018 the original author or authors.
+ * Copyright 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -108,16 +108,10 @@ class ImportsContextCustomizer implements ContextCustomizer {
 		throw new IllegalStateException("Could not locate BeanDefinitionRegistry");
 	}
 
-	@SuppressWarnings("unchecked")
 	private BeanDefinition registerBean(BeanDefinitionRegistry registry,
 			AnnotatedBeanDefinitionReader reader, String beanName, Class<?> type) {
 		reader.registerBean(type, beanName);
 		return registry.getBeanDefinition(beanName);
-	}
-
-	@Override
-	public int hashCode() {
-		return this.key.hashCode();
 	}
 
 	@Override
@@ -134,14 +128,20 @@ class ImportsContextCustomizer implements ContextCustomizer {
 	}
 
 	@Override
+	public int hashCode() {
+		return this.key.hashCode();
+	}
+
+	@Override
 	public String toString() {
 		return new ToStringCreator(this).append("key", this.key).toString();
 	}
 
 	/**
-	 * {@link Configuration} registered to trigger the {@link ImportsSelector}.
+	 * {@link Configuration @Configuration} registered to trigger the
+	 * {@link ImportsSelector}.
 	 */
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@Import(ImportsSelector.class)
 	static class ImportsConfiguration {
 
@@ -168,10 +168,10 @@ class ImportsContextCustomizer implements ContextCustomizer {
 		public String[] selectImports(AnnotationMetadata importingClassMetadata) {
 			BeanDefinition definition = this.beanFactory
 					.getBeanDefinition(ImportsConfiguration.BEAN_NAME);
-			Object testClass = (definition == null ? null
-					: definition.getAttribute(TEST_CLASS_ATTRIBUTE));
-			return (testClass == null ? NO_IMPORTS
-					: new String[] { ((Class<?>) testClass).getName() });
+			Object testClass = (definition != null)
+					? definition.getAttribute(TEST_CLASS_ATTRIBUTE) : null;
+			return (testClass != null) ? new String[] { ((Class<?>) testClass).getName() }
+					: NO_IMPORTS;
 		}
 
 	}
@@ -245,7 +245,7 @@ class ImportsContextCustomizer implements ContextCustomizer {
 			collectClassAnnotations(testClass, annotations, seen);
 			Set<Object> determinedImports = determineImports(annotations, testClass);
 			this.key = Collections.unmodifiableSet(
-					determinedImports != null ? determinedImports : annotations);
+					(determinedImports != null) ? determinedImports : annotations);
 		}
 
 		private void collectClassAnnotations(Class<?> classType,
@@ -339,20 +339,21 @@ class ImportsContextCustomizer implements ContextCustomizer {
 		}
 
 		@Override
-		public int hashCode() {
-			return this.key.hashCode();
-		}
-
-		@Override
 		public boolean equals(Object obj) {
 			return (obj != null && getClass() == obj.getClass()
 					&& this.key.equals(((ContextCustomizerKey) obj).key));
 		}
 
 		@Override
+		public int hashCode() {
+			return this.key.hashCode();
+		}
+
+		@Override
 		public String toString() {
 			return this.key.toString();
 		}
+
 	}
 
 	/**
